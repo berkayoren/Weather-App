@@ -7,7 +7,7 @@ const list = document.querySelector(".ajax-section ul.cities");
 
 localStorage.setItem(
   "tokenKey",
-  "Qz4DOSmGIic4qC2ylwIAmyS1TYddM0v0oDuClt/rHpqa7Cypfm9/HMrnFEFjXMdk"
+  "RAPAIooyOVFdRNn7gPi6i8vUp3OJvy0Np5wgMGgNO0a2a258kya95/arqJmhPrWc"
 );
 
 form.addEventListener("submit", (event) => {
@@ -24,12 +24,14 @@ const getWeatherDataFromApi = async () => {
   const units = "metric";
   const lang = "tr";
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${inputValue}&appid=${tokenKey}&units=${units}&lang=${lang}`;
+
   try {
-    // const response = await fetch(url).then((response) => response.json());
+    // const response = await fetch(url).then(response => response.json());
     const response = await axios(url);
     console.log(response);
-    //obj destr
+    //obj destr.
     const { main, sys, weather, name } = response.data;
+
     const iconUrl = `http://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
     const iconUrlAWS = `https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/${weather[0].icon}.svg`;
 
@@ -48,7 +50,7 @@ const getWeatherDataFromApi = async () => {
         return;
       }
     }
-    console.log(cityNameSpans);
+    //console.log(cityNameSpans);
     const createdLi = document.createElement("li");
     createdLi.classList.add("city");
     createdLi.innerHTML = `<h2 class="city-name" data-name="${name}, ${
@@ -68,11 +70,41 @@ const getWeatherDataFromApi = async () => {
                             </figure>`;
     //append vs. prepend
     list.prepend(createdLi);
-    form.reset();
+
+    //Capturing
+    // createdLi.addEventListener("click", (e)=>{
+    //     if(e.target.tagName == "IMG"){
+    //         e.target.src = (e.target.src == iconUrl) ? iconUrlAWS : iconUrl;
+    //     }
+    // });
+
+    //Bubbling
+    // createdLi.addEventListener("click", (e)=>{
+    //     alert(`LI element is clicked!!`);
+    //     window.location.href = "https://clarusway.com";
+    // });
+    // createdLi.querySelector("figure").addEventListener("click", (e)=>{
+    //     alert(`FIGURE element is clicked!!`);
+    //     //STOP BUBBLING
+    //     //e.stopPropagation();
+    //     // window.location.href = "https://clarusway.com";
+    // });
+    // createdLi.querySelector("img").addEventListener("click", (e)=>{
+    //     alert(`IMG element is clicked!!`);
+    //     // window.location.href = "https://clarusway.com";
+    // });
   } catch (error) {
     console.log(error);
     msg.innerText = `404 (City Not Found)`;
-    setTimeout(() => {}, 3000);
+    setTimeout(() => {
+      msg.innerText = "";
+    }, 5000);
   }
   form.reset();
 };
+//window onload
+document.querySelector(".cities").addEventListener("click", (e) => {
+  if (e.target.tagName == "IMG") {
+    alert("img is clicked!!!");
+  }
+});
